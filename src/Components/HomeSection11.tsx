@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-const IMG_PATH = "/public";
+const IMG_PATH = "/";
 const ORBIT_SPEED = "64s";
 
 type OrbitNode = {
@@ -19,7 +19,7 @@ const orbitNodes: OrbitNode[] = [
   {
     id: "r1-top",
     label: "NDIS",
-    logo: `${IMG_PATH}/ndis.png`,
+    logo: `/ndis.png`,
     size: 102,
     ring: 1,
     angle: -90,
@@ -30,7 +30,7 @@ const orbitNodes: OrbitNode[] = [
   {
     id: "r1-right",
     label: "Community Organisations",
-    logo: `${IMG_PATH}/cbo-care.png`,
+    logo: `/cbo-care.png`,
     size: 102,
     ring: 1,
     angle: 0,
@@ -41,7 +41,7 @@ const orbitNodes: OrbitNode[] = [
   {
     id: "r1-bottom",
     label: "GP Care",
-    logo: `${IMG_PATH}/gp-care.png`,
+    logo: `/gp-care.png`,
     size: 102,
     ring: 1,
     angle: 90,
@@ -52,7 +52,7 @@ const orbitNodes: OrbitNode[] = [
   {
     id: "r1-left",
     label: "PHN Western NSW",
-    logo: `${IMG_PATH}/phn.png`,
+    logo: `/phn.png`,
     size: 102,
     ring: 1,
     angle: 180,
@@ -65,7 +65,7 @@ const orbitNodes: OrbitNode[] = [
   {
     id: "r2-top-right",
     label: "Aged Care Quality",
-    logo: `${IMG_PATH}/aged-care-quality.png`,
+    logo: `/aged-care-quality.png`,
     size: 82,
     ring: 2,
     angle: -45,
@@ -76,7 +76,7 @@ const orbitNodes: OrbitNode[] = [
   {
     id: "r2-bottom-right",
     label: "Support Provider",
-    logo: `${IMG_PATH}/support-provider.png`,
+    logo: `/support-provider.png`,
     size: 82,
     ring: 2,
     angle: 45,
@@ -87,7 +87,7 @@ const orbitNodes: OrbitNode[] = [
   {
     id: "r2-bottom-left",
     label: "Continuity Care",
-    logo: `${IMG_PATH}/continuity-small.png`,
+    logo: `/continuity-small.png`,
     size: 82,
     ring: 2,
     angle: 135,
@@ -98,7 +98,7 @@ const orbitNodes: OrbitNode[] = [
   {
     id: "r2-top-left",
     label: "Community Care",
-    logo: `${IMG_PATH}/community-care.png`,
+    logo: `/community-care.png`,
     size: 82,
     ring: 2,
     angle: 225,
@@ -111,7 +111,7 @@ const orbitNodes: OrbitNode[] = [
   {
     id: "r3-top",
     label: "Care Partner",
-    logo: `${IMG_PATH}/care-partner.png`,
+    logo: `/care-partner.png`,
     size: 66,
     ring: 3,
     angle: -90,
@@ -122,7 +122,7 @@ const orbitNodes: OrbitNode[] = [
   {
     id: "r3-right",
     label: "Home Care",
-    logo: `${IMG_PATH}/home-care.png`,
+    logo: `/home-care.png`,
     size: 66,
     ring: 3,
     angle: 0,
@@ -133,7 +133,7 @@ const orbitNodes: OrbitNode[] = [
   {
     id: "r3-bottom",
     label: "Nursing Care",
-    logo: `${IMG_PATH}/nursing-care.png`,
+    logo: `/nursing-care.png`,
     size: 66,
     ring: 3,
     angle: 90,
@@ -144,7 +144,7 @@ const orbitNodes: OrbitNode[] = [
   {
     id: "r3-left",
     label: "Disability Support",
-    logo: `${IMG_PATH}/disability-support.png`,
+    logo: `/disability-support.png`,
     size: 66,
     ring: 3,
     angle: 180,
@@ -157,7 +157,7 @@ const orbitNodes: OrbitNode[] = [
   {
     id: "r4-top-right",
     label: "Therapy Care",
-    logo: `${IMG_PATH}/therapy-care.png`,
+    logo: `/therapy-care.png`,
     size: 50,
     ring: 4,
     angle: -45,
@@ -168,7 +168,7 @@ const orbitNodes: OrbitNode[] = [
   {
     id: "r4-bottom-right",
     label: "Plan Management",
-    logo: `${IMG_PATH}/plan-management.png`,
+    logo: `/plan-management.png`,
     size: 50,
     ring: 4,
     angle: 45,
@@ -179,7 +179,7 @@ const orbitNodes: OrbitNode[] = [
   {
     id: "r4-bottom-left",
     label: "Transport Care",
-    logo: `${IMG_PATH}/transport-care.png`,
+    logo: `/transport-care.png`,
     size: 50,
     ring: 4,
     angle: 135,
@@ -190,7 +190,7 @@ const orbitNodes: OrbitNode[] = [
   {
     id: "r4-top-left",
     label: "Respite Care",
-    logo: `${IMG_PATH}/respite-care.png`,
+    logo: `/respite-care.png`,
     size: 50,
     ring: 4,
     angle: 225,
@@ -670,10 +670,7 @@ export default function CareNetworkSection() {
         <div className="orbit-ring ring-4" />
 
         <div className="center-logo">
-          <img
-            src={`${IMG_PATH}/continuity-care-logo.png`}
-            alt="Continuity Care"
-          />
+          <img src={`/continuity-care-logo.png`} alt="Continuity Care" />
         </div>
 
         <div className="orbit-stage ring-1-stage">

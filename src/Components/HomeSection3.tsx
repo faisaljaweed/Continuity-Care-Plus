@@ -13,42 +13,42 @@ const services: Service[] = [
     title: "In-Home Care",
     description:
       "Personal support, domestic assistance, and companionship in the comfort of your own home.",
-    image: "/public/Rectangle_26.png",
+    image: "/Rectangle_26.png",
   },
   {
     id: 2,
     title: "Community Nursing",
     description:
       "Registered nurses delivering clinical care and wound management in your community.",
-    image: "/public/Rectangle_26_(1).png",
+    image: "/Rectangle_26_(1).png",
   },
   {
     id: 3,
     title: "Support Coordination",
     description:
       "Expert coordinators helping you navigate and maximise your NDIS funding effectively.",
-    image: "/public/Background_(1).png",
+    image: "/Background_(1).png",
   },
   {
     id: 4,
     title: "Allied Health Services",
     description:
       "Physio, OT, speech therapy and more — delivered by credentialed allied health professionals.",
-    image: "/public/Rectangle_26_(2).png",
+    image: "/Rectangle_26_(2).png",
   },
   {
     id: 5,
     title: "Care Navigation",
     description:
       "Helping you cut through complexity to find and connect with the right services.",
-    image: "/public/Background_(2).png",
+    image: "/Background_(2).png",
   },
   {
     id: 6,
     title: "Supported Independent Living",
     description:
       "Tailored SIL arrangements empowering you to live independently with the right daily support.",
-    image: "/public/Rectangle_28.png",
+    image: "/Rectangle_28.png",
   },
 ];
 
