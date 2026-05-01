@@ -14,6 +14,7 @@ import WhyChooseContinuityCare from "./Components/Home_Section8";
 import FAQSection from "./Components/Home_Section9";
 import CTAFooterSection from "./Components/Home_Section10";
 import Footer from "./Components/Footer";
+import CareNetworkSection from "./Components/HomeSection11";
 function App() {
   const [count, setCount] = useState(0);
 
@@ -24,6 +25,7 @@ function App() {
       <OurServices />
       <FindRightCare />
       <ReadyToStart />
+      <CareNetworkSection />
       <StartCareJourney />
       <InsightRresources />
       <WhyChooseContinuityCare />

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 
 const STEPS = [
   { id: 1, label: "Your Details" },
@@ -23,17 +23,25 @@ const FREQUENCY_OPTIONS = [
   "Flexible",
 ];
 
+type FormState = {
+  fullName: string;
+  email: string;
+  phone: string;
+  careTypes: string[];
+  frequency: string;
+  message: string;
+  agreeTerms: boolean;
+};
+
 export default function StartCareJourney() {
   const [step, setStep] = useState(1);
-  const [direction, setDirection] = useState("forward");
-  const [animating, setAnimating] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormState>({
     fullName: "",
     email: "",
     phone: "",
-    careTypes: [] as string[],
+    careTypes: [],
     frequency: "",
     message: "",
     agreeTerms: false,
@@ -41,10 +49,12 @@ export default function StartCareJourney() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const update = (field: string, value: any) =>
+  const update = <K extends keyof FormState>(field: K, value: FormState[K]) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+    setErrors((prev) => ({ ...prev, [field]: "" }));
+  };
 
-  const toggleCare = (type: string) =>
+  const toggleCare = (type: string) => {
     setForm((prev) => ({
       ...prev,
       careTypes: prev.careTypes.includes(type)
@@ -52,40 +62,43 @@ export default function StartCareJourney() {
         : [...prev.careTypes, type],
     }));
 
+    setErrors((prev) => ({ ...prev, careTypes: "" }));
+  };
+
   const validateStep = () => {
     const e: Record<string, string> = {};
+
     if (step === 1) {
       if (!form.fullName.trim()) e.fullName = "Full name is required";
-      if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email))
+
+      if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) {
         e.email = "Valid email is required";
+      }
+
       if (!form.phone.trim()) e.phone = "Phone number is required";
     }
+
     if (step === 2) {
-      if (form.careTypes.length === 0)
+      if (form.careTypes.length === 0) {
         e.careTypes = "Select at least one service";
-      if (!form.frequency) e.frequency = "Please select a frequency";
+      }
+
+      if (!form.frequency) {
+        e.frequency = "Please select a frequency";
+      }
     }
+
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
-  const goTo = (target: number) => {
-    if (animating) return;
-    setDirection(target > step ? "forward" : "back");
-    setAnimating(true);
-    setTimeout(() => {
-      setStep(target);
-      setAnimating(false);
-    }, 300);
-  };
-
   const handleNext = () => {
     if (!validateStep()) return;
-    if (step < 3) goTo(step + 1);
+    if (step < 3) setStep(step + 1);
   };
 
   const handleBack = () => {
-    if (step > 1) goTo(step - 1);
+    if (step > 1) setStep(step - 1);
   };
 
   const handleSubmit = () => {
@@ -93,428 +106,559 @@ export default function StartCareJourney() {
       setErrors({ agreeTerms: "Please agree to continue" });
       return;
     }
+
     setSubmitted(true);
   };
 
+  const resetForm = () => {
+    setSubmitted(false);
+    setStep(1);
+    setErrors({});
+    setForm({
+      fullName: "",
+      email: "",
+      phone: "",
+      careTypes: [],
+      frequency: "",
+      message: "",
+      agreeTerms: false,
+    });
+  };
+
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background:
-          "linear-gradient(125deg, #0a2a14 0%, #0d3318 20%, #114020 40%, #1a6030 60%, #22a050 80%, #2dcc68 100%)",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "40px 20px",
-        position: "relative",
-        overflow: "hidden",
-        fontFamily: "'Nunito Sans', 'Segoe UI', sans-serif",
-      }}
-    >
+    <section className="scj-section">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&display=swap');
-        * { box-sizing: border-box; }
 
-        /* Arc line decoration */
-        .scj-arc-svg { position:absolute; pointer-events:none; opacity:1; }
-
-        .scj-step-slide {
-          transition: opacity 0.3s ease, transform 0.3s ease;
+        * {
+          box-sizing: border-box;
         }
-        .scj-step-slide.exit-forward { opacity:0; transform:translateX(-24px); }
-        .scj-step-slide.exit-back    { opacity:0; transform:translateX(24px); }
-        .scj-step-slide.enter        { opacity:1; transform:translateX(0); }
 
-        .scj-input {
-          width:100%;
-          background:#e8f5e4;
-          border:1.5px solid #c0ddb8;
-          border-radius:10px;
-          padding:13px 16px;
-          font-size:14.5px;
-          color:#1a3a2a;
-          outline:none;
-          transition:border-color 0.2s, box-shadow 0.2s;
-          font-family:'Nunito Sans',sans-serif;
+        .scj-section {
+          width: 100%;
+          min-height: 565px;
+          padding: 34px 20px 34px;
+          position: relative;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          font-family: "Nunito Sans", "Segoe UI", sans-serif;
+          background:
+            radial-gradient(circle at 88% 50%, rgba(0, 222, 119, 0.96) 0%, rgba(0, 188, 97, 0.76) 26%, rgba(0, 92, 50, 0.38) 48%, transparent 68%),
+            linear-gradient(115deg, #001c12 0%, #062817 34%, #09341c 55%, #006c3a 78%, #02d477 100%);
         }
-        .scj-input::placeholder { color:#8aaa8a; }
-        .scj-input:focus { border-color:#3a8a5a; box-shadow:0 0 0 3px rgba(58,138,90,0.14); }
-        .scj-input.error { border-color:#d05050; background:#fff0f0; }
+
+        .scj-section::before {
+          content: "";
+          position: absolute;
+          left: -230px;
+          bottom: -360px;
+          width: 720px;
+          height: 720px;
+          border-radius: 50%;
+          border: 1px solid rgba(255, 255, 255, 0.34);
+          box-shadow:
+            18px 18px 0 -17px rgba(255,255,255,0.28),
+            36px 36px 0 -35px rgba(255,255,255,0.24),
+            54px 54px 0 -53px rgba(255,255,255,0.2),
+            72px 72px 0 -71px rgba(255,255,255,0.18),
+            90px 90px 0 -89px rgba(255,255,255,0.16),
+            108px 108px 0 -107px rgba(255,255,255,0.14),
+            126px 126px 0 -125px rgba(255,255,255,0.12);
+          pointer-events: none;
+        }
+
+        .scj-section::after {
+          content: "";
+          position: absolute;
+          right: -115px;
+          top: -355px;
+          width: 560px;
+          height: 560px;
+          border-radius: 50%;
+          border: 1px solid rgba(255, 255, 255, 0.5);
+          box-shadow:
+            16px 16px 0 -15px rgba(255,255,255,0.38),
+            32px 32px 0 -31px rgba(255,255,255,0.32),
+            48px 48px 0 -47px rgba(255,255,255,0.28),
+            64px 64px 0 -63px rgba(255,255,255,0.24),
+            80px 80px 0 -79px rgba(255,255,255,0.2),
+            96px 96px 0 -95px rgba(255,255,255,0.16);
+          pointer-events: none;
+        }
+
+        .scj-header {
+          position: relative;
+          z-index: 2;
+          text-align: center;
+          margin-bottom: 16px;
+        }
+
+        .scj-title {
+          margin: 0 0 12px;
+          color: #ffffff;
+          font-size: 21px;
+          line-height: 1.2;
+          font-weight: 900;
+        }
+
+        .scj-subtitle {
+          margin: 0 auto;
+          max-width: 660px;
+          color: rgba(255, 255, 255, 0.82);
+          font-size: 11px;
+          line-height: 1.5;
+          font-weight: 500;
+        }
+
+        .scj-stepper {
+          position: relative;
+          z-index: 2;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 32px;
+        }
+
+        .scj-step-item {
+          display: flex;
+          align-items: center;
+        }
+
+        .scj-step-circle {
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 10px;
+          font-weight: 800;
+          transition: 0.3s ease;
+        }
+
+        .scj-step-circle.active {
+          background: #ffffff;
+          color: #1e3d2f;
+        }
+
+        .scj-step-circle.done {
+          background: #a9ca99;
+          color: #ffffff;
+        }
+
+        .scj-step-circle.inactive {
+          background: #a9ca99;
+          color: #ffffff;
+          opacity: 0.95;
+        }
+
+        .scj-step-label {
+          color: rgba(255, 255, 255, 0.78);
+          font-size: 10px;
+          margin-left: 9px;
+          white-space: nowrap;
+        }
+
+        .scj-step-line {
+          width: 56px;
+          height: 1px;
+          background: rgba(255, 255, 255, 0.78);
+          margin: 0 13px;
+        }
+
+        .scj-card {
+          width: 100%;
+          max-width: 700px;
+          min-height: 244px;
+          background: #ffffff;
+          border-radius: 16px;
+          padding: 28px 64px 30px;
+          position: relative;
+          z-index: 2;
+        }
+
+        .scj-card-head {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 22px;
+        }
+
+        .scj-badge {
+          background: #355d45;
+          color: #ffffff;
+          font-size: 9px;
+          font-weight: 800;
+          padding: 4px 12px;
+          border-radius: 999px;
+        }
+
+        .scj-card-title {
+          color: #244338;
+          font-size: 13px;
+          font-weight: 900;
+        }
 
         .scj-label {
-          display:block;
-          font-size:13px;
-          font-weight:700;
-          color:#2a4a3a;
-          margin-bottom:7px;
-          letter-spacing:0.01em;
+          display: block;
+          font-size: 11px;
+          font-weight: 800;
+          color: #223f35;
+          margin-bottom: 9px;
         }
+
+        .scj-input,
+        .scj-textarea {
+          width: 100%;
+          background: #cee1c3;
+          border: 1.5px solid #86b37e;
+          border-radius: 5px;
+          padding: 12px 13px;
+          font-size: 11px;
+          color: #173529;
+          outline: none;
+          font-family: inherit;
+        }
+
+        .scj-input::placeholder,
+        .scj-textarea::placeholder {
+          color: #405c4d;
+          opacity: 0.86;
+        }
+
+        .scj-input:focus,
+        .scj-textarea:focus {
+          border-color: #315f43;
+          box-shadow: 0 0 0 3px rgba(49, 95, 67, 0.12);
+        }
+
+        .scj-input.error {
+          border-color: #d14444;
+          background: #fff2f2;
+        }
+
         .scj-error-msg {
-          font-size:12px;
-          color:#c03030;
-          margin-top:5px;
-          font-weight:600;
+          margin: 5px 0 0;
+          color: #c03030;
+          font-size: 10px;
+          font-weight: 700;
         }
 
-        .scj-care-chip {
-          display:inline-flex;
-          align-items:center;
-          gap:7px;
-          padding:9px 16px;
-          border-radius:50px;
-          border:1.8px solid #c0ddb8;
-          background:#edf7ed;
-          color:#2a4a3a;
-          font-size:13px;
-          font-weight:600;
-          cursor:pointer;
-          transition:all 0.2s;
-          user-select:none;
-        }
-        .scj-care-chip:hover { border-color:#5aaa6a; background:#dff0df; }
-        .scj-care-chip.selected {
-          background:#1a5c30;
-          border-color:#1a5c30;
-          color:#fff;
+        .scj-field-group {
+          display: flex;
+          flex-direction: column;
+          gap: 17px;
         }
 
-        .scj-freq-opt {
-          display:inline-flex;
-          align-items:center;
-          justify-content:center;
-          padding:9px 18px;
-          border-radius:50px;
-          border:1.8px solid #c0ddb8;
-          background:#edf7ed;
-          color:#2a4a3a;
-          font-size:13px;
-          font-weight:600;
-          cursor:pointer;
-          transition:all 0.2s;
-          user-select:none;
+        .scj-two-col {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 14px;
         }
-        .scj-freq-opt:hover { border-color:#5aaa6a; background:#dff0df; }
-        .scj-freq-opt.selected { background:#1a5c30; border-color:#1a5c30; color:#fff; }
+
+        .scj-divider {
+          height: 1px;
+          background: #d9e6dc;
+          margin: 20px 0 24px;
+        }
+
+        .scj-actions {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+        }
+
+        .scj-actions.space {
+          justify-content: space-between;
+        }
 
         .scj-continue-btn {
-          display:inline-flex;
-          align-items:center;
-          gap:9px;
-          background:#1a3a2a;
-          color:#fff;
-          border:none;
-          border-radius:50px;
-          padding:13px 28px;
-          font-size:14.5px;
-          font-weight:800;
-          cursor:pointer;
-          transition:background 0.2s, transform 0.15s;
-          font-family:'Nunito Sans',sans-serif;
+          border: 0;
+          outline: 0;
+          color: #ffffff;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          font-size: 11px;
+          font-weight: 700;
+          padding: 9px 20px;
+          border-radius: 999px;
+          font-family: inherit;
+          background: linear-gradient(90deg, #1f4638 0%, #8bb36c 100%);
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .scj-continue-btn:hover { background:#0d2a1a; transform:translateY(-1px); }
+
+        .scj-continue-btn:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 8px 18px rgba(32, 70, 56, 0.24);
+        }
 
         .scj-back-btn {
-          display:inline-flex;
-          align-items:center;
-          gap:8px;
-          background:transparent;
-          color:#5a7a6a;
-          border:none;
-          font-size:14px;
-          font-weight:700;
-          cursor:pointer;
-          padding:0;
-          transition:color 0.2s;
-          font-family:'Nunito Sans',sans-serif;
-        }
-        .scj-back-btn:hover { color:#1a3a2a; }
-
-        .scj-check {
-          width:18px; height:18px;
-          border:2px solid #8aaa8a;
-          border-radius:5px;
-          background:#edf7ed;
-          cursor:pointer;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          flex-shrink:0;
-          transition:all 0.2s;
-        }
-        .scj-check.checked {
-          background:#1a5c30;
-          border-color:#1a5c30;
+          border: 0;
+          outline: 0;
+          background: transparent;
+          cursor: pointer;
+          color: #476858;
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          font-size: 12px;
+          font-weight: 800;
+          font-family: inherit;
         }
 
-        .scj-trust {
-          display:flex;
-          align-items:center;
-          gap:6px;
-          font-size:13px;
-          color:rgba(255,255,255,0.75);
-          font-weight:600;
+        .scj-care-list,
+        .scj-frequency-list {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 9px;
+        }
+
+        .scj-care-chip,
+        .scj-freq-opt {
+          border: 1.5px solid #9dbf92;
+          background: #e9f3e3;
+          color: #25483a;
+          border-radius: 999px;
+          padding: 8px 13px;
+          font-size: 11px;
+          font-weight: 700;
+          cursor: pointer;
+          user-select: none;
+          transition: 0.2s ease;
+        }
+
+        .scj-care-chip.selected,
+        .scj-freq-opt.selected {
+          background: #244d39;
+          border-color: #244d39;
+          color: #ffffff;
         }
 
         .scj-textarea {
-          width:100%;
-          background:#e8f5e4;
-          border:1.5px solid #c0ddb8;
-          border-radius:10px;
-          padding:13px 16px;
-          font-size:14px;
-          color:#1a3a2a;
-          outline:none;
-          resize:none;
-          transition:border-color 0.2s, box-shadow 0.2s;
-          font-family:'Nunito Sans',sans-serif;
-          min-height:90px;
+          min-height: 76px;
+          resize: none;
         }
-        .scj-textarea::placeholder { color:#8aaa8a; }
-        .scj-textarea:focus { border-color:#3a8a5a; box-shadow:0 0 0 3px rgba(58,138,90,0.14); }
 
-        @media (max-width: 600px) {
-          .scj-two-col { flex-direction:column !important; }
-          .scj-trust-row { flex-direction:column !important; gap:12px !important; }
+        .scj-summary {
+          background: #edf6e9;
+          border-radius: 10px;
+          padding: 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .scj-summary-row {
+          display: flex;
+          justify-content: space-between;
+          gap: 14px;
+          border-bottom: 1px solid rgba(49, 95, 67, 0.12);
+          padding-bottom: 8px;
+        }
+
+        .scj-summary-label {
+          color: #607b6d;
+          font-size: 11px;
+          font-weight: 800;
+          flex-shrink: 0;
+        }
+
+        .scj-summary-value {
+          color: #1f3f33;
+          font-size: 11px;
+          font-weight: 700;
+          text-align: right;
+        }
+
+        .scj-check-row {
+          display: flex;
+          gap: 10px;
+          align-items: flex-start;
+        }
+
+        .scj-check {
+          width: 17px;
+          height: 17px;
+          border-radius: 4px;
+          border: 2px solid #8aaa8a;
+          background: #edf7ed;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          margin-top: 2px;
+        }
+
+        .scj-check.checked {
+          background: #244d39;
+          border-color: #244d39;
+        }
+
+        .scj-check-text {
+          color: #4a6a5a;
+          font-size: 11px;
+          line-height: 1.5;
+          cursor: pointer;
+        }
+
+        .scj-success {
+          text-align: center;
+          padding: 20px 0;
+        }
+
+        .scj-success-icon {
+          width: 58px;
+          height: 58px;
+          border-radius: 50%;
+          background: #edf7ed;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto 18px;
+        }
+
+        .scj-success-title {
+          margin: 0 0 10px;
+          color: #102e21;
+          font-size: 22px;
+          font-weight: 900;
+        }
+
+        .scj-success-text {
+          margin: 0 auto 24px;
+          max-width: 400px;
+          color: #4a6a5a;
+          font-size: 13px;
+          line-height: 1.6;
+        }
+
+        .scj-trust-row {
+          position: relative;
+          z-index: 2;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 42px;
+          margin-top: 32px;
+          flex-wrap: wrap;
+        }
+
+        .scj-trust {
+          display: flex;
+          align-items: center;
+          gap: 7px;
+          color: rgba(255, 255, 255, 0.82);
+          font-size: 11px;
+          font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+          .scj-section {
+            padding: 42px 16px;
+            min-height: auto;
+          }
+
+          .scj-title {
+            font-size: 22px;
+          }
+
+          .scj-stepper {
+            transform: scale(0.88);
+          }
+
+          .scj-card {
+            max-width: 100%;
+            padding: 28px 20px;
+          }
+
+          .scj-two-col {
+            grid-template-columns: 1fr;
+          }
+
+          .scj-step-line {
+            width: 34px;
+            margin: 0 8px;
+          }
+
+          .scj-step-label {
+            display: none;
+          }
+
+          .scj-trust-row {
+            gap: 14px;
+            flex-direction: column;
+          }
         }
       `}</style>
 
-      {/* === DECORATIVE ARC LINES === */}
-      {/* Left arcs */}
-      <svg
-        className="scj-arc-svg"
-        style={{ left: -80, top: -40, width: 520, height: "100vh" }}
-        viewBox="0 0 520 800"
-        preserveAspectRatio="none"
-      >
-        {[60, 100, 140, 180, 220, 260, 300, 340, 380, 420, 460, 500].map(
-          (r, i) => (
-            <path
-              key={i}
-              d={`M${r} 0 Q${r - 60} 400 ${r} 800`}
-              fill="none"
-              stroke="rgba(255,255,255,0.07)"
-              strokeWidth="1.5"
-            />
-          ),
-        )}
-      </svg>
-
-      {/* Right bright arcs */}
-      <svg
-        className="scj-arc-svg"
-        style={{ right: -80, top: -40, width: 520, height: "100vh" }}
-        viewBox="0 0 520 800"
-        preserveAspectRatio="none"
-      >
-        {[60, 100, 140, 180, 220, 260, 300, 340, 380, 420, 460, 500].map(
-          (r, i) => (
-            <path
-              key={i}
-              d={`M${520 - r} 0 Q${520 - r + 60} 400 ${520 - r} 800`}
-              fill="none"
-              stroke="rgba(255,255,255,0.09)"
-              strokeWidth="1.5"
-            />
-          ),
-        )}
-      </svg>
-
-      {/* === HEADER === */}
-      <div
-        style={{
-          textAlign: "center",
-          marginBottom: 28,
-          position: "relative",
-          zIndex: 2,
-        }}
-      >
-        <h1
-          style={{
-            fontSize: 26,
-            fontWeight: 900,
-            color: "#fff",
-            marginBottom: 10,
-            textShadow: "0 2px 12px rgba(0,0,0,0.25)",
-          }}
-        >
-          Start Your Care Journey
-        </h1>
-        <p
-          style={{
-            fontSize: 14,
-            color: "rgba(255,255,255,0.78)",
-            maxWidth: 500,
-            margin: "0 auto",
-            lineHeight: 1.6,
-          }}
-        >
+      <div className="scj-header">
+        <h1 className="scj-title">Start Your Care Journey</h1>
+        <p className="scj-subtitle">
           Tell us a little about your needs and we'll match you with the right
-          support. No obligation — just the right care faster.
+          support. No obligation—just the right care faster.
         </p>
       </div>
 
-      {/* === STEP INDICATOR === */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 0,
-          marginBottom: 28,
-          position: "relative",
-          zIndex: 2,
-        }}
-      >
-        {STEPS.map((s, i) => {
+      <div className="scj-stepper">
+        {STEPS.map((s, index) => {
           const done = step > s.id;
           const active = step === s.id;
+
           return (
-            <div
-              key={s.id}
-              style={{ display: "flex", alignItems: "center", gap: 0 }}
-            >
+            <div className="scj-step-item" key={s.id}>
               <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 6,
-                }}
+                className={`scj-step-circle ${
+                  done ? "done" : active ? "active" : "inactive"
+                }`}
               >
-                <div
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: "50%",
-                    background: done
-                      ? "#2dcc68"
-                      : active
-                        ? "#fff"
-                        : "rgba(255,255,255,0.18)",
-                    border: active
-                      ? "3px solid #2dcc68"
-                      : done
-                        ? "none"
-                        : "2px solid rgba(255,255,255,0.3)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    transition: "all 0.3s",
-                    boxShadow: active
-                      ? "0 0 0 4px rgba(45,204,104,0.25)"
-                      : "none",
-                  }}
-                >
-                  {done ? (
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#0a3d1f"
-                      strokeWidth="3"
-                    >
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  ) : (
-                    <span
-                      style={{
-                        fontSize: 13,
-                        fontWeight: 800,
-                        color: active ? "#1a3a2a" : "rgba(255,255,255,0.7)",
-                      }}
-                    >
-                      {s.id}
-                    </span>
-                  )}
-                </div>
-                <span
-                  style={{
-                    fontSize: 11.5,
-                    fontWeight: 700,
-                    color:
-                      active || done
-                        ? "rgba(255,255,255,0.95)"
-                        : "rgba(255,255,255,0.5)",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {s.label}
-                </span>
+                {done ? (
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                ) : (
+                  s.id
+                )}
               </div>
-              {i < STEPS.length - 1 && (
-                <div
-                  style={{
-                    width: 70,
-                    height: 2,
-                    background:
-                      step > s.id ? "#2dcc68" : "rgba(255,255,255,0.2)",
-                    marginBottom: 18,
-                    transition: "background 0.4s",
-                    flexShrink: 0,
-                  }}
-                />
-              )}
+
+              <span className="scj-step-label">{s.label}</span>
+
+              {index < STEPS.length - 1 && <div className="scj-step-line" />}
             </div>
           );
         })}
       </div>
 
-      {/* === CARD === */}
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: 20,
-          width: "100%",
-          maxWidth: 520,
-          padding: "32px 36px 28px",
-          boxShadow: "0 24px 80px rgba(0,0,0,0.28)",
-          position: "relative",
-          zIndex: 2,
-          minHeight: 280,
-        }}
-      >
+      <div className="scj-card">
         {!submitted ? (
-          <div className={`scj-step-slide enter`}>
-            {/* Step badge */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                marginBottom: 22,
-              }}
-            >
-              <span
-                style={{
-                  background: "#1a5c30",
-                  color: "#fff",
-                  fontSize: 11.5,
-                  fontWeight: 800,
-                  padding: "4px 12px",
-                  borderRadius: 50,
-                  letterSpacing: "0.03em",
-                }}
-              >
-                Step {step} of 3
-              </span>
-              <span style={{ fontSize: 14, fontWeight: 700, color: "#2a4a3a" }}>
+          <>
+            <div className="scj-card-head">
+              <span className="scj-badge">Step {step} of 3</span>
+              <span className="scj-card-title">
                 {step === 1 && "Let's start with your basic details"}
                 {step === 2 && "Tell us about your care needs"}
                 {step === 3 && "Review & confirm your details"}
               </span>
             </div>
 
-            {/* STEP 1 */}
             {step === 1 && (
-              <div
-                style={{ display: "flex", flexDirection: "column", gap: 18 }}
-              >
+              <div className="scj-field-group">
                 <div>
-                  <label className="scj-label">Full Name *</label>
+                  <label className="scj-label">Full Name*</label>
                   <input
-                    className={`scj-input${errors.fullName ? " error" : ""}`}
-                    placeholder="e.g. Sarah Thompson"
+                    className={`scj-input ${errors.fullName ? "error" : ""}`}
+                    placeholder="e.g.Sarah Thompson"
                     value={form.fullName}
                     onChange={(e) => update("fullName", e.target.value)}
                   />
@@ -522,14 +666,12 @@ export default function StartCareJourney() {
                     <p className="scj-error-msg">{errors.fullName}</p>
                   )}
                 </div>
-                <div
-                  className="scj-two-col"
-                  style={{ display: "flex", gap: 14 }}
-                >
-                  <div style={{ flex: 1 }}>
-                    <label className="scj-label">Email Address *</label>
+
+                <div className="scj-two-col">
+                  <div>
+                    <label className="scj-label">Email Address*</label>
                     <input
-                      className={`scj-input${errors.email ? " error" : ""}`}
+                      className={`scj-input ${errors.email ? "error" : ""}`}
                       placeholder="you@email.com"
                       type="email"
                       value={form.email}
@@ -539,10 +681,11 @@ export default function StartCareJourney() {
                       <p className="scj-error-msg">{errors.email}</p>
                     )}
                   </div>
-                  <div style={{ flex: 1 }}>
-                    <label className="scj-label">Phone Number *</label>
+
+                  <div>
+                    <label className="scj-label">Phone Number*</label>
                     <input
-                      className={`scj-input${errors.phone ? " error" : ""}`}
+                      className={`scj-input ${errors.phone ? "error" : ""}`}
                       placeholder="04xxxxxxxx"
                       type="tel"
                       value={form.phone}
@@ -556,72 +699,66 @@ export default function StartCareJourney() {
               </div>
             )}
 
-            {/* STEP 2 */}
             {step === 2 && (
-              <div
-                style={{ display: "flex", flexDirection: "column", gap: 20 }}
-              >
+              <div className="scj-field-group">
                 <div>
-                  <label className="scj-label" style={{ marginBottom: 10 }}>
-                    What type of care do you need? *
+                  <label className="scj-label">
+                    What type of care do you need?*
                   </label>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 9 }}>
+
+                  <div className="scj-care-list">
                     {CARE_TYPES.map((type) => (
-                      <div
+                      <button
+                        type="button"
                         key={type}
-                        className={`scj-care-chip${form.careTypes.includes(type) ? " selected" : ""}`}
+                        className={`scj-care-chip ${
+                          form.careTypes.includes(type) ? "selected" : ""
+                        }`}
                         onClick={() => toggleCare(type)}
                       >
-                        {form.careTypes.includes(type) && (
-                          <svg
-                            width="12"
-                            height="12"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="3"
-                          >
-                            <polyline points="20 6 9 17 4 12" />
-                          </svg>
-                        )}
                         {type}
-                      </div>
+                      </button>
                     ))}
                   </div>
+
                   {errors.careTypes && (
-                    <p className="scj-error-msg" style={{ marginTop: 8 }}>
-                      {errors.careTypes}
-                    </p>
+                    <p className="scj-error-msg">{errors.careTypes}</p>
                   )}
                 </div>
+
                 <div>
-                  <label className="scj-label" style={{ marginBottom: 10 }}>
-                    How often do you need support? *
+                  <label className="scj-label">
+                    How often do you need support?*
                   </label>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 9 }}>
+
+                  <div className="scj-frequency-list">
                     {FREQUENCY_OPTIONS.map((opt) => (
-                      <div
+                      <button
+                        type="button"
                         key={opt}
-                        className={`scj-freq-opt${form.frequency === opt ? " selected" : ""}`}
+                        className={`scj-freq-opt ${
+                          form.frequency === opt ? "selected" : ""
+                        }`}
                         onClick={() => update("frequency", opt)}
                       >
                         {opt}
-                      </div>
+                      </button>
                     ))}
                   </div>
+
                   {errors.frequency && (
-                    <p className="scj-error-msg" style={{ marginTop: 8 }}>
-                      {errors.frequency}
-                    </p>
+                    <p className="scj-error-msg">{errors.frequency}</p>
                   )}
                 </div>
+
                 <div>
                   <label className="scj-label">
                     Anything else you'd like us to know?{" "}
-                    <span style={{ color: "#8aaa8a", fontWeight: 600 }}>
+                    <span style={{ color: "#7b9a83", fontWeight: 700 }}>
                       (Optional)
                     </span>
                   </label>
+
                   <textarea
                     className="scj-textarea"
                     placeholder="Tell us more about your situation, goals, or preferences..."
@@ -632,22 +769,9 @@ export default function StartCareJourney() {
               </div>
             )}
 
-            {/* STEP 3 */}
             {step === 3 && (
-              <div
-                style={{ display: "flex", flexDirection: "column", gap: 18 }}
-              >
-                {/* Summary */}
-                <div
-                  style={{
-                    background: "#edf7ed",
-                    borderRadius: 12,
-                    padding: "18px 20px",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 12,
-                  }}
-                >
+              <div className="scj-field-group">
+                <div className="scj-summary">
                   {[
                     { label: "Full Name", value: form.fullName },
                     { label: "Email", value: form.email },
@@ -657,69 +781,25 @@ export default function StartCareJourney() {
                       value: form.careTypes.join(", ") || "—",
                     },
                     { label: "Frequency", value: form.frequency || "—" },
-                  ].map(({ label, value }) => (
-                    <div
-                      key={label}
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        gap: 12,
-                        borderBottom: "1px solid rgba(58,122,90,0.1)",
-                        paddingBottom: 10,
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontSize: 13,
-                          fontWeight: 700,
-                          color: "#4a6a5a",
-                          flexShrink: 0,
-                        }}
-                      >
-                        {label}
-                      </span>
-                      <span
-                        style={{
-                          fontSize: 13,
-                          fontWeight: 600,
-                          color: "#1a3a2a",
-                          textAlign: "right",
-                        }}
-                      >
-                        {value}
-                      </span>
+                  ].map((item) => (
+                    <div className="scj-summary-row" key={item.label}>
+                      <span className="scj-summary-label">{item.label}</span>
+                      <span className="scj-summary-value">{item.value}</span>
                     </div>
                   ))}
+
                   {form.message && (
-                    <div
-                      style={{
-                        borderBottom: "1px solid rgba(58,122,90,0.1)",
-                        paddingBottom: 10,
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontSize: 13,
-                          fontWeight: 700,
-                          color: "#4a6a5a",
-                          display: "block",
-                          marginBottom: 4,
-                        }}
-                      >
-                        Notes
-                      </span>
-                      <span style={{ fontSize: 13, color: "#1a3a2a" }}>
-                        {form.message}
-                      </span>
+                    <div className="scj-summary-row">
+                      <span className="scj-summary-label">Notes</span>
+                      <span className="scj-summary-value">{form.message}</span>
                     </div>
                   )}
                 </div>
-                {/* Agree checkbox */}
-                <div
-                  style={{ display: "flex", alignItems: "flex-start", gap: 10 }}
-                >
-                  <div
-                    className={`scj-check${form.agreeTerms ? " checked" : ""}`}
+
+                <div className="scj-check-row">
+                  <button
+                    type="button"
+                    className={`scj-check ${form.agreeTerms ? "checked" : ""}`}
                     onClick={() => update("agreeTerms", !form.agreeTerms)}
                   >
                     {form.agreeTerms && (
@@ -728,63 +808,42 @@ export default function StartCareJourney() {
                         height="11"
                         viewBox="0 0 24 24"
                         fill="none"
-                        stroke="#fff"
+                        stroke="#ffffff"
                         strokeWidth="3"
                       >
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
                     )}
-                  </div>
+                  </button>
+
                   <span
-                    style={{
-                      fontSize: 13,
-                      color: "#4a6a5a",
-                      lineHeight: 1.55,
-                      cursor: "pointer",
-                    }}
+                    className="scj-check-text"
                     onClick={() => update("agreeTerms", !form.agreeTerms)}
                   >
                     I agree to Continuity Care's{" "}
-                    <span
-                      style={{
-                        color: "#1a5c30",
-                        fontWeight: 700,
-                        textDecoration: "underline",
-                      }}
-                    >
-                      Privacy Policy
-                    </span>{" "}
+                    <strong style={{ color: "#244d39" }}>Privacy Policy</strong>{" "}
                     and consent to be contacted about my care options.
                   </span>
                 </div>
+
                 {errors.agreeTerms && (
                   <p className="scj-error-msg">{errors.agreeTerms}</p>
                 )}
               </div>
             )}
 
-            {/* Divider */}
-            <div
-              style={{
-                height: 1,
-                background: "#e0ece4",
-                margin: "24px 0 18px",
-              }}
-            />
+            <div className="scj-divider" />
 
-            {/* Actions */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: step > 1 ? "space-between" : "flex-end",
-              }}
-            >
+            <div className={`scj-actions ${step > 1 ? "space" : ""}`}>
               {step > 1 && (
-                <button className="scj-back-btn" onClick={handleBack}>
+                <button
+                  type="button"
+                  className="scj-back-btn"
+                  onClick={handleBack}
+                >
                   <svg
-                    width="15"
-                    height="15"
+                    width="14"
+                    height="14"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -796,12 +855,17 @@ export default function StartCareJourney() {
                   Back
                 </button>
               )}
+
               {step < 3 ? (
-                <button className="scj-continue-btn" onClick={handleNext}>
+                <button
+                  type="button"
+                  className="scj-continue-btn"
+                  onClick={handleNext}
+                >
                   Continue
                   <svg
-                    width="15"
-                    height="15"
+                    width="14"
+                    height="14"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -813,14 +877,14 @@ export default function StartCareJourney() {
                 </button>
               ) : (
                 <button
+                  type="button"
                   className="scj-continue-btn"
                   onClick={handleSubmit}
-                  style={{ background: "#1a6030" }}
                 >
                   Submit & Start Care
                   <svg
-                    width="15"
-                    height="15"
+                    width="14"
+                    height="14"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -831,71 +895,36 @@ export default function StartCareJourney() {
                 </button>
               )}
             </div>
-          </div>
+          </>
         ) : (
-          /* SUCCESS STATE */
-          <div style={{ textAlign: "center", padding: "16px 0" }}>
-            <div
-              style={{
-                width: 64,
-                height: 64,
-                borderRadius: "50%",
-                background: "#edf7ed",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "0 auto 20px",
-              }}
-            >
+          <div className="scj-success">
+            <div className="scj-success-icon">
               <svg
                 width="32"
                 height="32"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#1a6030"
+                stroke="#244d39"
                 strokeWidth="2.5"
               >
                 <polyline points="20 6 9 17 4 12" />
               </svg>
             </div>
-            <h3
-              style={{
-                fontSize: 22,
-                fontWeight: 900,
-                color: "#0f2a1c",
-                marginBottom: 10,
-              }}
-            >
-              You're all set, {form.fullName.split(" ")[0]}!
+
+            <h3 className="scj-success-title">
+              You're all set
+              {form.fullName ? `, ${form.fullName.split(" ")[0]}` : ""}!
             </h3>
-            <p
-              style={{
-                fontSize: 14.5,
-                color: "#4a6a5a",
-                lineHeight: 1.65,
-                marginBottom: 24,
-                maxWidth: 360,
-                margin: "0 auto 24px",
-              }}
-            >
+
+            <p className="scj-success-text">
               Thank you for reaching out. A member of our care team will contact
               you within 24 hours to discuss your options.
             </p>
+
             <button
+              type="button"
               className="scj-continue-btn"
-              onClick={() => {
-                setSubmitted(false);
-                setStep(1);
-                setForm({
-                  fullName: "",
-                  email: "",
-                  phone: "",
-                  careTypes: [],
-                  frequency: "",
-                  message: "",
-                  agreeTerms: false,
-                });
-              }}
+              onClick={resetForm}
             >
               Start Another Enquiry
             </button>
@@ -903,32 +932,19 @@ export default function StartCareJourney() {
         )}
       </div>
 
-      {/* === TRUST BADGES === */}
-      <div
-        className="scj-trust-row"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 32,
-          marginTop: 28,
-          position: "relative",
-          zIndex: 2,
-          flexWrap: "wrap",
-          justifyContent: "center",
-        }}
-      >
+      <div className="scj-trust-row">
         {[
           "No obligation, cancel anytime",
           "Secure & encrypted",
           "Response within 24 hours",
         ].map((text) => (
-          <div key={text} className="scj-trust">
+          <div className="scj-trust" key={text}>
             <svg
-              width="13"
-              height="13"
+              width="12"
+              height="12"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="rgba(255,255,255,0.8)"
+              stroke="rgba(255,255,255,0.9)"
               strokeWidth="2.5"
             >
               <polyline points="20 6 9 17 4 12" />
@@ -937,6 +953,6 @@ export default function StartCareJourney() {
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 }

@@ -9,21 +9,6 @@ interface FeatureCard {
   statLabel: string;
 }
 
-const CheckIcon: React.FC<{ size?: number }> = ({ size = 24 }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <polyline points="20 6 9 17 4 12" />
-  </svg>
-);
-
 const features: FeatureCard[] = [
   {
     id: 1,
@@ -128,7 +113,7 @@ const stats = [
 
 export default function WhyChooseContinuityCare() {
   const [visible, setVisible] = useState(false);
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const obs = new IntersectionObserver(
@@ -137,283 +122,393 @@ export default function WhyChooseContinuityCare() {
       },
       { threshold: 0.08 },
     );
+
     if (ref.current) obs.observe(ref.current);
+
     return () => obs.disconnect();
   }, []);
 
   return (
-    <section
-      ref={ref}
-      style={{
-        background: "#fff",
-        padding: "80px 24px 90px",
-        fontFamily: "'Nunito Sans', 'Segoe UI', sans-serif",
-      }}
-    >
+    <section ref={ref} className="wcc-section">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&display=swap');
-        * { box-sizing: border-box; }
+        .wcc-section {
+          width: 100%;
+          background: #ffffff;
+          padding: 70px 24px 80px;
+          font-family: Arial, Helvetica, sans-serif;
+          box-sizing: border-box;
+        }
 
         .wcc-fade {
           opacity: 0;
           transform: translateY(24px);
           transition: opacity 0.55s ease, transform 0.55s ease;
         }
-        .wcc-fade.visible { opacity: 1; transform: translateY(0); }
+
+        .wcc-fade.visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
 
         .wcc-top {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 60px;
-          align-items: center;
-          max-width: 1100px;
-          margin: 0 auto 64px;
+          gap: 80px;
+          align-items: start;
+          max-width: 1340px;
+          margin: 0 auto 54px;
+        }
+
+        .wcc-small-title {
+          font-size: 15px;
+          font-weight: 800;
+          color: #168545;
+          margin: 0 0 12px;
+        }
+
+        .wcc-heading {
+          font-size: 48px;
+          font-weight: 800;
+          color: #24443b;
+          line-height: 1.05;
+          margin: 0;
+        }
+
+        .wcc-heading-green {
+          color: #9DC184;
+        }
+
+        .wcc-intro {
+          font-size: 15px;
+          color: #111111;
+          line-height: 1.65;
+          max-width: 560px;
+          margin: 22px 0 34px;
+        }
+
+        .wcc-stats {
+          display: flex;
+          align-items: flex-start;
+          gap: 48px;
+          flex-wrap: wrap;
+        }
+
+        .wcc-stat-value {
+          font-size: 30px;
+          font-weight: 800;
+          color: #24443b;
+          line-height: 1;
+        }
+
+        .wcc-stat-label {
+          font-size: 13px;
+          color: #111111;
+          font-weight: 600;
+          margin-top: 7px;
+        }
+
+        .wcc-testimonial-wrap {
+          position: relative;
+          padding-bottom: 22px;
         }
 
         .wcc-testimonial {
-          background: #d4ead4;
-          border-radius: 20px;
-          padding: 32px 32px 28px;
-          position: relative;
-          border: 1px solid #c0d8bc;
+          background: #d7ebcc;
+          border-radius: 14px;
+          padding: 34px 40px 42px;
+          min-height: 220px;
+          border: 1px solid #b9d3aa;
         }
 
-        .wcc-stars { display: flex; gap: 4px; margin-bottom: 16px; }
+        .wcc-stars {
+          display: flex;
+          gap: 3px;
+          margin-bottom: 20px;
+        }
 
         .wcc-quote {
           font-size: 16px;
           font-style: italic;
-          color: #1a3a2a;
-          line-height: 1.7;
-          font-weight: 600;
-          margin-bottom: 20px;
+          color: #111111;
+          line-height: 1.65;
+          font-weight: 700;
+          max-width: 540px;
+          margin: 0 0 24px;
         }
 
-        .wcc-avatar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+        .wcc-avatar-row {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
         .wcc-avatar {
-          width: 44px; height: 44px;
+          width: 38px;
+          height: 38px;
           border-radius: 50%;
-          background: #2d6a4f;
-          color: #fff;
-          font-size: 15px;
+          background: #ffffff;
+          color: #234336;
+          font-size: 13px;
           font-weight: 800;
           display: flex;
           align-items: center;
           justify-content: center;
         }
 
-        .wcc-author-name { font-size: 14px; font-weight: 800; color: #0f2a1c; }
-        .wcc-author-role { font-size: 12.5px; color: #4a7a5a; font-weight: 600; }
+        .wcc-author-name {
+          font-size: 14px;
+          font-weight: 800;
+          color: #111111;
+        }
+
+        .wcc-author-role {
+          font-size: 12px;
+          color: #111111;
+          font-weight: 500;
+        }
 
         .wcc-ndis-badge {
+          position: absolute;
+          left: -20px;
+          bottom: 0;
           display: inline-flex;
           align-items: center;
           gap: 8px;
-          background: #2d6a4f;
-          color: #fff;
-          font-size: 12.5px;
+          background: linear-gradient(90deg, #234638 0%, #8dbb78 100%);
+          color: #ffffff;
+          font-size: 13px;
           font-weight: 800;
-          padding: 8px 18px;
-          border-radius: 50px;
+          padding: 11px 20px;
+          border-radius: 5px;
+          box-shadow: 0 8px 18px rgba(33, 70, 56, 0.16);
+          white-space: nowrap;
         }
 
         .wcc-features-grid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
-          gap: 18px;
-          max-width: 1100px;
+          gap: 22px;
+          max-width: 1340px;
           margin: 0 auto;
         }
 
         .wcc-feat-card {
-          border: 1.5px solid #e4f0e4;
-          border-radius: 16px;
-          padding: 28px 22px 24px;
-          background: #fff;
-          transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s;
-          cursor: default;
+          min-height: 295px;
+          border: 1.6px solid #e7bfa8;
+          border-radius: 14px;
+          padding: 30px 30px 26px;
+          background: #ffffff;
+          display: flex;
+          flex-direction: column;
+          transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease,
+            border-color 0.25s ease;
         }
+
         .wcc-feat-card:hover {
           transform: translateY(-5px);
-          box-shadow: 0 12px 36px rgba(26,90,50,0.1);
-          border-color: #a8d4a8;
+          box-shadow: 0 14px 35px rgba(38, 77, 59, 0.12);
+          border-color: #94bd7c;
         }
 
         .wcc-feat-icon {
-          width: 50px; height: 50px;
-          border-radius: 12px;
-          background: #edf7ed;
+          width: 48px;
+          height: 48px;
+          border-radius: 10px;
+          background: #d7ebcc;
           color: #2d6a4f;
           display: flex;
           align-items: center;
           justify-content: center;
-          margin-bottom: 20px;
-          transition: background 0.2s;
-        }
-        .wcc-feat-card:hover .wcc-feat-icon {
-          background: #d4ead4;
+          margin-bottom: 28px;
         }
 
         .wcc-feat-title {
-          font-size: 14.5px;
+          min-height: 48px;
+          font-size: 17px;
           font-weight: 800;
-          color: #0f2a1c;
-          margin-bottom: 10px;
-          line-height: 1.35;
+          color: #24443b;
+          line-height: 1.3;
+          margin: 0 0 14px;
         }
 
         .wcc-feat-desc {
-          font-size: 13px;
-          color: #5a7a6a;
-          line-height: 1.68;
-          margin-bottom: 20px;
+          font-size: 14px;
+          color: #111111;
+          line-height: 1.6;
+          margin: 0 0 24px;
         }
 
         .wcc-stat-badge {
+          margin-top: auto;
+          min-height: 38px;
+          width: 100%;
           display: flex;
           align-items: center;
-          gap: 6px;
-          background: #2d5a3a;
-          border-radius: 8px;
-          padding: 10px 14px;
-        }
-        .wcc-stat-val {
-          font-size: 15px;
-          font-weight: 900;
-          color: #fff;
-        }
-        .wcc-stat-lbl {
-          font-size: 11.5px;
-          font-weight: 600;
-          color: rgba(255,255,255,0.7);
+          gap: 8px;
+          background: linear-gradient(90deg, #234638 0%, #8dbb78 100%);
+          border-radius: 5px;
+          padding: 9px 14px;
+          white-space: nowrap;
+          box-sizing: border-box;
         }
 
-        @media (max-width: 980px) {
-          .wcc-top { grid-template-columns: 1fr; gap: 36px; }
-          .wcc-features-grid { grid-template-columns: repeat(2, 1fr); }
+        .wcc-stat-val {
+          font-size: 14px;
+          font-weight: 900;
+          color: #ffffff;
+          flex-shrink: 0;
         }
-        @media (max-width: 560px) {
-          .wcc-features-grid { grid-template-columns: 1fr; }
+
+        .wcc-stat-lbl {
+          font-size: 11px;
+          font-weight: 500;
+          color: rgba(255, 255, 255, 0.82);
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        @media (max-width: 1024px) {
+          .wcc-top {
+            grid-template-columns: 1fr;
+            gap: 35px;
+            max-width: 820px;
+          }
+
+          .wcc-ndis-badge {
+            left: 20px;
+          }
+
+          .wcc-features-grid {
+            grid-template-columns: repeat(2, 1fr);
+            max-width: 820px;
+          }
+        }
+
+        @media (max-width: 600px) {
+          .wcc-section {
+            padding: 55px 16px 65px;
+          }
+
+          .wcc-top {
+            max-width: 100%;
+          }
+
+          .wcc-heading {
+            font-size: 34px;
+          }
+
+          .wcc-intro {
+            font-size: 14px;
+            max-width: 100%;
+          }
+
+          .wcc-stats {
+            gap: 24px;
+          }
+
+          .wcc-stat-value {
+            font-size: 26px;
+          }
+
+          .wcc-stat-label {
+            font-size: 12px;
+          }
+
+          .wcc-testimonial {
+            padding: 24px 22px 42px;
+          }
+
+          .wcc-quote {
+            font-size: 14px;
+          }
+
+          .wcc-features-grid {
+            grid-template-columns: 1fr;
+            max-width: 100%;
+          }
+
+          .wcc-feat-card {
+            padding: 24px 24px 22px;
+            min-height: 260px;
+          }
+
+          .wcc-feat-title {
+            min-height: auto;
+            font-size: 16px;
+          }
+
+          .wcc-feat-desc {
+            font-size: 13px;
+          }
+
+          .wcc-ndis-badge {
+            left: 14px;
+            font-size: 10px;
+          }
         }
       `}</style>
 
-      {/* Top section */}
       <div className={`wcc-fade wcc-top${visible ? " visible" : ""}`}>
-        {/* LEFT */}
         <div>
-          <p
-            style={{
-              fontSize: 13,
-              fontWeight: 700,
-              color: "#3a8a5a",
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              marginBottom: 12,
-            }}
-          >
-            Our Difference
-          </p>
-          <h2
-            style={{
-              fontSize: 42,
-              fontWeight: 900,
-              color: "#0f2a1c",
-              lineHeight: 1.15,
-              marginBottom: 6,
-            }}
-          >
-            Why Choose
-          </h2>
-          <h2
-            style={{
-              fontSize: 42,
-              fontWeight: 900,
-              color: "#2d8a50",
-              lineHeight: 1.15,
-              marginBottom: 20,
-            }}
-          >
-            Continuity Care
-          </h2>
-          <p
-            style={{
-              fontSize: 15,
-              color: "#5a7a6a",
-              lineHeight: 1.72,
-              maxWidth: 400,
-              marginBottom: 32,
-            }}
-          >
-            We're not just a care provider — we're your partner in building a
-            life that feels full, independent, and meaningful. Here's what sets
-            us apart.
+          <p className="wcc-small-title">Our Difference</p>
+
+          <h2 className="wcc-heading">Why Choose</h2>
+          <h2 className="wcc-heading wcc-heading-green">Continuity Care</h2>
+
+          <p className="wcc-intro">
+            We&apos;re not just a care provider—we&apos;re your partner in
+            building a life that feels full, independent, and meaningful.
+            Here&apos;s what sets us apart.
           </p>
 
-          {/* Stats */}
-          <div style={{ display: "flex", gap: 36, flexWrap: "wrap" }}>
-            {stats.map((s) => (
-              <div key={s.label}>
-                <div
-                  style={{
-                    fontSize: 32,
-                    fontWeight: 900,
-                    color: "#0f2a1c",
-                    lineHeight: 1,
-                  }}
-                >
-                  {s.value}
-                </div>
-                <div
-                  style={{
-                    fontSize: 12.5,
-                    color: "#6a8a7a",
-                    fontWeight: 600,
-                    marginTop: 4,
-                  }}
-                >
-                  {s.label}
-                </div>
+          <div className="wcc-stats">
+            {stats.map((item) => (
+              <div key={item.label}>
+                <div className="wcc-stat-value">{item.value}</div>
+                <div className="wcc-stat-label">{item.label}</div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* RIGHT — Testimonial */}
-        <div className="wcc-testimonial">
-          {/* Stars */}
-          <div className="wcc-stars">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <svg
-                key={i}
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="#f5a623"
-                stroke="#f5a623"
-                strokeWidth="1.5"
-              >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-            ))}
-          </div>
+        <div className="wcc-testimonial-wrap">
+          <div className="wcc-testimonial">
+            <div className="wcc-stars">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <svg
+                  key={index}
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="#f5a623"
+                  stroke="#f5a623"
+                  strokeWidth="1.5"
+                >
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+              ))}
+            </div>
 
-          <p className="wcc-quote">
-            "Continuity Care changed everything for our family. Mum finally has
-            the support she needs, and we finally have peace of mind."
-          </p>
+            <p className="wcc-quote">
+              “Continuity Care changed everything for our family. Mum finally
+              has the support she needs, and we finally have peace of mind.”
+            </p>
 
-          <div className="wcc-avatar-row">
-            <div className="wcc-avatar">JT</div>
-            <div>
-              <div className="wcc-author-name">James T.</div>
-              <div className="wcc-author-role">Family carer, Sydney</div>
+            <div className="wcc-avatar-row">
+              <div className="wcc-avatar">JT</div>
+              <div>
+                <div className="wcc-author-name">James T.</div>
+                <div className="wcc-author-role">Family carer, Sydney</div>
+              </div>
             </div>
           </div>
 
           <div className="wcc-ndis-badge">
             <svg
-              width="14"
-              height="14"
+              width="13"
+              height="13"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -427,17 +522,21 @@ export default function WhyChooseContinuityCare() {
         </div>
       </div>
 
-      {/* Feature cards */}
       <div className="wcc-features-grid">
-        {features.map((feat, i) => (
+        {features.map((feat, index) => (
           <div
             key={feat.id}
             className={`wcc-fade wcc-feat-card${visible ? " visible" : ""}`}
-            style={{ transitionDelay: `${i * 0.1 + 0.15}s` }}
+            style={{
+              transitionDelay: `${index * 0.1 + 0.15}s`,
+            }}
           >
             <div className="wcc-feat-icon">{feat.icon}</div>
+
             <h3 className="wcc-feat-title">{feat.title}</h3>
+
             <p className="wcc-feat-desc">{feat.description}</p>
+
             <div className="wcc-stat-badge">
               <span className="wcc-stat-val">{feat.stat}</span>
               <span className="wcc-stat-lbl">{feat.statLabel}</span>

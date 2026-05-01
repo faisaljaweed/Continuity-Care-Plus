@@ -113,16 +113,39 @@ export default function Footer() {
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&display=swap');
-        * { box-sizing: border-box; }
+
+        * {
+          box-sizing: border-box;
+        }
 
         .ft-main {
           display: grid;
-          grid-template-columns: 260px 1fr 1fr 240px;
+          grid-template-columns: 260px 1fr 1fr 260px;
           gap: 48px;
           max-width: 1200px;
           margin: 0 auto;
           padding: 52px 40px 44px;
           align-items: start;
+        }
+
+        .ft-logo-box {
+          width:30%;
+          height: auto;
+          border-radius: 12px;
+          background: #ffffff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 8px;
+          margin-bottom: 18px;
+          overflow: hidden;
+        }
+
+        .ft-logo-img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          display: block;
         }
 
         .ft-link {
@@ -141,8 +164,14 @@ export default function Footer() {
           font-family: 'Nunito Sans', sans-serif;
           line-height: 1;
         }
-        .ft-link:hover { color: #fff; }
-        .ft-link:last-child { margin-bottom: 0; }
+
+        .ft-link:hover {
+          color: #ffffff;
+        }
+
+        .ft-link:last-child {
+          margin-bottom: 0;
+        }
 
         .ft-col-title {
           font-size: 11px;
@@ -154,23 +183,24 @@ export default function Footer() {
         }
 
         .ft-social-btn {
-          width: 34px;
-          height: 34px;
-          border-radius: 8px;
-          background: rgba(255,255,255,0.1);
-          border: 1px solid rgba(255,255,255,0.15);
+          width: 30px;
+          height: 30px;
+          border-radius: 7px;
+          background: #3CB244;
+          border: 1px solid rgba(255,255,255,0.18);
           display: flex;
           align-items: center;
           justify-content: center;
-          color: rgba(255,255,255,0.7);
+          color: #ffffff;
           cursor: pointer;
-          transition: background 0.2s, color 0.2s, border-color 0.2s;
+          transition: background 0.2s, color 0.2s, transform 0.2s;
           flex-shrink: 0;
         }
+
         .ft-social-btn:hover {
-          background: rgba(255,255,255,0.18);
-          color: #fff;
-          border-color: rgba(255,255,255,0.3);
+          background: #35a33d;
+          color: #ffffff;
+          transform: translateY(-2px);
         }
 
         .ft-contact-row {
@@ -179,19 +209,21 @@ export default function Footer() {
           gap: 12px;
           margin-bottom: 18px;
         }
+
         .ft-contact-icon {
           width: 30px;
           height: 30px;
           border-radius: 8px;
-          background: rgba(45,140,80,0.35);
-          border: 1px solid rgba(100,200,120,0.2);
+          background: #3CB244;
+          border: 1px solid rgba(255,255,255,0.18);
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #7acf9a;
+          color: #ffffff;
           flex-shrink: 0;
           margin-top: 1px;
         }
+
         .ft-contact-label {
           font-size: 10px;
           font-weight: 800;
@@ -200,45 +232,56 @@ export default function Footer() {
           text-transform: uppercase;
           margin-bottom: 3px;
         }
+
         .ft-contact-value {
           font-size: 13px;
           font-weight: 600;
           color: rgba(255,255,255,0.82);
           line-height: 1.4;
         }
+
         .ft-contact-value a {
           color: inherit;
           text-decoration: none;
           transition: color 0.2s;
         }
-        .ft-contact-value a:hover { color: #fff; }
+
+        .ft-contact-value a:hover {
+          color: #ffffff;
+        }
 
         .ft-cta-btn {
           display: inline-flex;
           align-items: center;
           gap: 9px;
-          background: transparent;
-          border: 1.8px solid rgba(255,255,255,0.45);
-          color: #fff;
+          background: #eaf7ee;
+          border: 0;
+          color: #234638;
           border-radius: 50px;
-          padding: 12px 22px;
+          padding: 13px 22px;
           font-size: 13.5px;
-          font-weight: 700;
+          font-weight: 800;
           cursor: pointer;
-          transition: background 0.2s, border-color 0.2s, transform 0.18s;
+          transition: background 0.2s, transform 0.18s;
           font-family: 'Nunito Sans', sans-serif;
           width: 100%;
           justify-content: center;
           margin-top: 6px;
           white-space: nowrap;
         }
+
         .ft-cta-btn:hover {
-          background: rgba(255,255,255,0.1);
-          border-color: rgba(255,255,255,0.75);
+          background: #ffffff;
           transform: translateY(-1px);
         }
-        .ft-cta-btn svg { transition: transform 0.2s; }
-        .ft-cta-btn:hover svg { transform: translateX(3px); }
+
+        .ft-cta-btn svg {
+          transition: transform 0.2s;
+        }
+
+        .ft-cta-btn:hover svg {
+          transform: translateX(3px);
+        }
 
         .ft-divider {
           height: 1px;
@@ -262,6 +305,7 @@ export default function Footer() {
           font-size: 12px;
           color: rgba(255,255,255,0.38);
           font-weight: 500;
+          margin: 0;
         }
 
         .ft-bottom-links {
@@ -270,6 +314,7 @@ export default function Footer() {
           gap: 22px;
           flex-wrap: wrap;
         }
+
         .ft-bottom-link {
           font-size: 12px;
           color: rgba(255,255,255,0.45);
@@ -278,7 +323,10 @@ export default function Footer() {
           transition: color 0.2s;
           cursor: pointer;
         }
-        .ft-bottom-link:hover { color: rgba(255,255,255,0.8); }
+
+        .ft-bottom-link:hover {
+          color: rgba(255,255,255,0.8);
+        }
 
         .ft-ndis {
           font-size: 12px;
@@ -291,125 +339,40 @@ export default function Footer() {
         }
 
         @media (max-width: 1024px) {
-          .ft-main { grid-template-columns: 1fr 1fr; gap: 36px; }
+          .ft-main {
+            grid-template-columns: 1fr 1fr;
+            gap: 36px;
+          }
         }
+
         @media (max-width: 640px) {
-          .ft-main { grid-template-columns: 1fr; padding: 36px 24px 32px; gap: 28px; }
-          .ft-bottom { flex-direction: column; align-items: flex-start; padding: 16px 24px; gap: 10px; }
-          .ft-bottom-links { gap: 14px; }
+          .ft-main {
+            grid-template-columns: 1fr;
+            padding: 36px 24px 32px;
+            gap: 28px;
+          }
+
+          .ft-bottom {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 16px 24px;
+            gap: 10px;
+          }
+
+          .ft-bottom-links {
+            gap: 14px;
+          }
         }
       `}</style>
 
-      {/* Main Grid */}
       <div className="ft-main">
-        {/* ── Col 1: Brand ── */}
         <div>
-          {/* Logo */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              marginBottom: 18,
-            }}
-          >
-            <div
-              style={{
-                width: 52,
-                height: 52,
-                borderRadius: 12,
-                background: "#fff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-                padding: 6,
-              }}
-            >
-              <svg viewBox="0 0 44 44" fill="none" width="40" height="40">
-                <circle cx="22" cy="22" r="22" fill="#e8f5e0" />
-                <g transform="translate(10,6)">
-                  <circle cx="12" cy="5" r="3" fill="#3a7a3a" />
-                  <line
-                    x1="12"
-                    y1="8"
-                    x2="12"
-                    y2="20"
-                    stroke="#3a7a3a"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                  />
-                  <line
-                    x1="6"
-                    y1="13"
-                    x2="18"
-                    y2="13"
-                    stroke="#3a7a3a"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                  />
-                  <line
-                    x1="12"
-                    y1="20"
-                    x2="8"
-                    y2="26"
-                    stroke="#3a7a3a"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                  <line
-                    x1="12"
-                    y1="20"
-                    x2="16"
-                    y2="26"
-                    stroke="#3a7a3a"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                  <line
-                    x1="6"
-                    y1="13"
-                    x2="3"
-                    y2="18"
-                    stroke="#5aaa5a"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                  />
-                  <line
-                    x1="18"
-                    y1="13"
-                    x2="21"
-                    y2="18"
-                    stroke="#5aaa5a"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                  />
-                </g>
-              </svg>
-            </div>
-            <div>
-              <div
-                style={{
-                  fontSize: 13,
-                  fontWeight: 800,
-                  color: "#fff",
-                  letterSpacing: "0.04em",
-                  lineHeight: 1.1,
-                }}
-              >
-                CONTINUITY
-              </div>
-              <div
-                style={{
-                  fontSize: 10,
-                  fontWeight: 600,
-                  color: "rgba(255,255,255,0.5)",
-                  letterSpacing: "0.14em",
-                }}
-              >
-                CARE
-              </div>
-            </div>
+          <div className="ft-logo-box">
+            <img
+              src="/Continuity-Care-Logo-PDF 2.png"
+              alt="Continuity Care"
+              className="ft-logo-img"
+            />
           </div>
 
           <p
@@ -426,7 +389,6 @@ export default function Footer() {
             lives.
           </p>
 
-          {/* Social Icons */}
           <div style={{ display: "flex", gap: 10 }}>
             {[<FacebookIcon />, <LinkedInIcon />, <InstagramIcon />].map(
               (icon, i) => (
@@ -434,6 +396,7 @@ export default function Footer() {
                   key={i}
                   className="ft-social-btn"
                   aria-label={["Facebook", "LinkedIn", "Instagram"][i]}
+                  type="button"
                 >
                   {icon}
                 </button>
@@ -442,7 +405,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* ── Col 2: Services ── */}
         <div>
           <p className="ft-col-title">Services</p>
           {serviceLinks.map((link) => (
@@ -452,7 +414,6 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* ── Col 3: Company ── */}
         <div>
           <p className="ft-col-title">Company</p>
           {companyLinks.map((link) => (
@@ -462,7 +423,6 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* ── Col 4: Get In Touch ── */}
         <div>
           <p className="ft-col-title">Get In Touch</p>
 
@@ -502,7 +462,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <button className="ft-cta-btn">
+          <button className="ft-cta-btn" type="button">
             Start Your Care Journey
             <svg
               width="14"
@@ -520,16 +480,8 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Divider */}
-      <div
-        style={{
-          height: 1,
-          background: "rgba(255,255,255,0.08)",
-          margin: "0 40px",
-        }}
-      />
+      <div className="ft-divider" />
 
-      {/* Bottom bar */}
       <div className="ft-bottom">
         <p className="ft-copy">
           2026 Continuity Care Pty Ltd. All rights reserved. ABN 00 000 000 000

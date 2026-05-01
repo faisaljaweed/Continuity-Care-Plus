@@ -58,17 +58,13 @@ export default function FAQSection() {
       },
       { threshold: 0.1 },
     );
+
     if (ref.current) obs.observe(ref.current);
+
     return () => obs.disconnect();
   }, []);
 
   const toggle = (id: number) => setOpenId((prev) => (prev === id ? null : id));
-
-  const getHeight = (id: number): string => {
-    const el = answerRefs.current[id];
-    if (!el || openId !== id) return "0px";
-    return `${el.scrollHeight}px`;
-  };
 
   return (
     <section
@@ -81,14 +77,21 @@ export default function FAQSection() {
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&display=swap');
-        * { box-sizing: border-box; }
+
+        * {
+          box-sizing: border-box;
+        }
 
         .faq-fade {
           opacity: 0;
           transform: translateY(24px);
           transition: opacity 0.55s ease, transform 0.55s ease;
         }
-        .faq-fade.in { opacity: 1; transform: translateY(0); }
+
+        .faq-fade.in {
+          opacity: 1;
+          transform: translateY(0);
+        }
 
         .faq-item {
           background: #deeede;
@@ -97,13 +100,15 @@ export default function FAQSection() {
           transition: box-shadow 0.25s ease;
           border: 1.5px solid transparent;
         }
+
         .faq-item:hover {
-          box-shadow: 0 4px 20px rgba(26,90,50,0.09);
+          box-shadow: 0 4px 20px rgba(26, 90, 50, 0.09);
           border-color: #b8d8b8;
         }
+
         .faq-item.open {
           border-color: #a8cca8;
-          box-shadow: 0 6px 28px rgba(26,90,50,0.11);
+          box-shadow: 0 6px 28px rgba(26, 90, 50, 0.11);
         }
 
         .faq-header {
@@ -121,11 +126,18 @@ export default function FAQSection() {
         }
 
         .faq-num {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          background: #ffffff;
+          color: #3a6a4a;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
           font-size: 13px;
-          font-weight: 800;
-          color: #5a8a6a;
-          min-width: 22px;
+          font-weight: 900;
           flex-shrink: 0;
+          box-shadow: 0 4px 12px rgba(26, 90, 50, 0.08);
         }
 
         .faq-question {
@@ -140,8 +152,8 @@ export default function FAQSection() {
           width: 34px;
           height: 34px;
           border-radius: 50%;
-          background: rgba(255,255,255,0.7);
-          border: 1.5px solid rgba(255,255,255,0.9);
+          background: rgba(255, 255, 255, 0.7);
+          border: 1.5px solid rgba(255, 255, 255, 0.9);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -149,6 +161,7 @@ export default function FAQSection() {
           transition: background 0.2s, transform 0.35s ease;
           color: #3a6a4a;
         }
+
         .faq-item.open .faq-chevron-wrap {
           background: #fff;
           transform: rotate(180deg);
@@ -156,15 +169,12 @@ export default function FAQSection() {
 
         .faq-body {
           overflow: hidden;
-          transition: max-height 0.38s cubic-bezier(0.4,0,0.2,1);
+          transition: max-height 0.38s cubic-bezier(0.4, 0, 0.2, 1);
           max-height: 0;
-        }
-        .faq-body.open {
-          /* max-height set inline */
         }
 
         .faq-answer {
-          padding: 0 24px 22px 52px;
+          padding: 0 24px 22px 76px;
           font-size: 14px;
           color: #3a5a4a;
           line-height: 1.75;
@@ -180,12 +190,27 @@ export default function FAQSection() {
         }
 
         @media (max-width: 600px) {
-          .faq-question { font-size: 14px; }
-          .faq-answer { padding-left: 38px; }
+          .faq-header {
+            gap: 12px;
+            padding: 18px 16px;
+          }
+
+          .faq-num {
+            width: 32px;
+            height: 32px;
+            font-size: 12px;
+          }
+
+          .faq-question {
+            font-size: 14px;
+          }
+
+          .faq-answer {
+            padding: 0 18px 20px 60px;
+          }
         }
       `}</style>
 
-      {/* Header */}
       <div
         className={`faq-fade${visible ? " in" : ""}`}
         style={{
@@ -207,6 +232,7 @@ export default function FAQSection() {
         >
           FAQ
         </p>
+
         <h2
           style={{
             fontSize: 44,
@@ -218,6 +244,7 @@ export default function FAQSection() {
         >
           Frequently Asked Questions
         </h2>
+
         <p style={{ fontSize: 15.5, color: "#5a7a6a", lineHeight: 1.65 }}>
           Everything you need to know before getting started. Can't find your
           answer?{" "}
@@ -235,14 +262,16 @@ export default function FAQSection() {
         </p>
       </div>
 
-      {/* FAQ List */}
       <div className="faq-list">
         {faqs.map((faq, i) => {
           const isOpen = openId === faq.id;
+
           return (
             <div
               key={faq.id}
-              className={`faq-fade faq-item${isOpen ? " open" : ""}${visible ? " in" : ""}`}
+              className={`faq-fade faq-item${isOpen ? " open" : ""}${
+                visible ? " in" : ""
+              }`}
               style={{ transitionDelay: `${i * 0.08 + 0.05}s` }}
             >
               <button
@@ -251,7 +280,9 @@ export default function FAQSection() {
                 aria-expanded={isOpen}
               >
                 <span className="faq-num">{faq.number}</span>
+
                 <span className="faq-question">{faq.question}</span>
+
                 <span className="faq-chevron-wrap">
                   <svg
                     width="16"
