@@ -11,25 +11,25 @@ const cards: AdvantageCard[] = [
   {
     title: "Care Coordination",
     description: "Seamless management of all your care needs.",
-    image: "/public/Background_(3).png",
+    image: "/Background_(3).png",
     icon: "care",
   },
   {
     title: "Personalised Support",
     description: "Our services are tailored to your individual needs.",
-    image: "/public/Background_(4).png",
+    image: "/Background_(4).png",
     icon: "support",
   },
   {
     title: "Connected Services",
     description: "All care solutions are integrated into one system.",
-    image: "/public/Background_(5).png",
+    image: "/Background_(5).png",
     icon: "connected",
   },
   {
     title: "Ongoing Guidance",
     description: "We provide continuous support and expert guidance.",
-    image: "/public/Background_(6).png",
+    image: "/Background_(6).png",
     icon: "guidance",
   },
 ];

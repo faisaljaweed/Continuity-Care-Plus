@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-const IMG_PATH = "/public/network";
+const IMG_PATH = "/public";
 const ORBIT_SPEED = "64s";
 
 type OrbitNode = {
