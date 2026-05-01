@@ -369,7 +369,7 @@ export default function Footer() {
         <div>
           <div className="ft-logo-box">
             <img
-              src="/Continuity-Care-Logo-PDF 2.png"
+              src="/Continuity-Care-Logo-PDF_2.png"
               alt="Continuity Care"
               className="ft-logo-img"
             />

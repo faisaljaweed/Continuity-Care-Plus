@@ -15,7 +15,7 @@ const articles: Article[] = [
     description:
       "Learn how the NDIS works, what support you can access, and how to begin your care journey with confidence.",
     date: "Jan 12, 2026",
-    image: "/Rectangle 34.png",
+    image: "/Rectangle_34.png",
   },
   {
     id: 2,
@@ -23,7 +23,7 @@ const articles: Article[] = [
     description:
       "Discover key factors to consider when selecting a care provider and how to find the right fit for you or your loved one.",
     date: "Feb 05, 2026",
-    image: "/Rectangle 34 (1).png",
+    image: "/Rectangle_34_(1).png",
   },
   {
     id: 3,
@@ -31,7 +31,7 @@ const articles: Article[] = [
     description:
       "Compare different care options to understand which support model best suits your lifestyle and needs.",
     date: "Mar 18, 2026",
-    image: "/Rectangle 34 (2).png",
+    image: "/Rectangle_34_(2).png",
   },
 ];
 

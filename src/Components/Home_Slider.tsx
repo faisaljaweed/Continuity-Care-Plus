@@ -20,7 +20,7 @@ const slides: Slide[] = [
     highlight: "live independently",
     description:
       "We support individuals and families with disability care, in-home services, nursing, and care coordination - making it easier to access the right support with confidence, clarity, and continuity.",
-    image: "/public/Rectangle 21.png",
+    image: "/public/Rectangle_21.png",
     tags: [
       "NDIS Registered",
       "Personalised Support",
@@ -39,7 +39,7 @@ const slides: Slide[] = [
     highlight: "when you need it most",
     description:
       "Our registered nurses deliver expert medical care in the comfort of your own home. From wound care to chronic disease management, we bring the clinic to you.",
-    image: "/public/Rectangle 23.png",
+    image: "/public/Rectangle_23.png",
     tags: [
       "Registered Nurses",
       "24/7 Support",
@@ -58,7 +58,7 @@ const slides: Slide[] = [
     highlight: "support & coordination",
     description:
       "Navigating the NDIS can be complex. Our experienced coordinators guide you through every step, ensuring you receive the support funding and services you deserve.",
-    image: "/public/Rectangle 24.png",
+    image: "/public/Rectangle_24.png",
     tags: [
       "NDIS Registered",
       "Plan Management",
@@ -672,7 +672,7 @@ export default function ContinuityCare() {
         <div className="cc-nav-inner">
           <a href="#" className="cc-logo">
             <img
-              src="/public/Continuity-Care-Logo-PDF 2.png"
+              src="/public/Continuity-Care-Logo-PDF_2.png"
               alt="Continuity Care"
             />
           </a>
